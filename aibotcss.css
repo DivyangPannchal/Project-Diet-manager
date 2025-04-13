@@ -1,0 +1,239 @@
+body {
+  background-image: url(bgimage4.jpg);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+:root{
+  --green: #1ec6b6;
+  --light-grey: #f7f7f7;
+  --dark: #0e1010;
+  --trans: all 0.3s ease-in-out;
+}
+.navbar{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: transparent;
+  padding: 1rem 0;
+  z-index: 999;
+}
+.navbar .container{
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.site-brand{
+  color: #fff;
+  font-size: 2.4rem;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  opacity: 0.95;
+}
+.site-brand span{
+  font-weight: 300;
+}
+
+#navbar-show-btn{
+  background: transparent;
+  color: #fff;
+  font-size: 2rem;
+  opacity: 0.9;
+  -webkit-transition: var(--trans);
+  -o-transition: var(--trans);
+  transition: var(--trans);
+  border: none;
+}
+#navbar-show-btn:hover{
+  opacity: 1;
+}
+
+/* navbar side menu */
+#navbar-collapse{
+  background-color: var(--green);
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100%;
+  padding: 2rem;
+  -webkit-transform: translateX(100%);
+      -ms-transform: translateX(100%);
+          transform: translateX(100%);
+  -webkit-transition: var(--trans);
+  -o-transition: var(--trans);
+  transition: var(--trans);
+}
+.navbar-collapse-rmw{
+  /* js related */
+  -webkit-transform: translateX(0)!important;
+      -ms-transform: translateX(0)!important;
+          transform: translateX(0)!important;
+}
+#navbar-close-btn{
+  background: none;
+  color: #fff;
+  width: 35px;
+  height: 35px;
+  border-radius: 0.2rem;
+  font-size: 2rem;
+  -webkit-transition: var(--trans);
+  -o-transition: var(--trans);
+  transition: var(--trans);
+  position: absolute;
+  right: 1rem;
+  top: 2rem;
+  border: none;
+}
+#navbar-close-btn:hover{
+  background-color: #fff;
+  color: var(--green);
+}
+.navbar-nav{
+  margin-top: 5rem;
+}
+.nav-item{
+  margin: 1.6rem 0;
+}
+.nav-link{
+  color: black;
+  font-size: large;
+    font-weight: bold;
+  font-size: 1.2rem;
+  -webkit-transition: var(--trans);
+  -o-transition: var(--trans);
+  transition: var(--trans);
+}
+.nav-link:hover{
+  color: #fff;
+}
+
+.box {
+  width: 500px;
+  background: #fafafa;
+  border-radius: 12px;
+  padding-left: 50px;
+  text-align: center;
+  box-shadow: 2px 2px 20px 5px rgba(0,0,0,0.5);
+
+}
+
+
+h1 {
+  color: rgb(0, 0, 0, 0.7);
+  font-weight: bold;
+  font-size: 36px;
+  padding: 30px 0;
+  
+}
+
+body .card {
+  height: 35vw;
+  width: 35vw;
+  border-radius: 40px;
+  margin-left: 30vw;
+  margin-top: 10vw;
+  margin-bottom: 20vw;
+  margin-right: 30vw;
+  padding-bottom: 30px;
+}
+
+body .card #message-section::-webkit-scrollbar {
+  width: 20px;
+}
+body .card #message-section {
+  height: 32vw;
+  padding: 2.5vw;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+body .card #message-section::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+body .card #message-section::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG);
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
+body .card #message-section #bot,
+body .card #message-section #user {
+  position: relative;
+  bottom: 0;
+  min-height: 1.5vw;
+  border: 0.15vw solid #777;
+  background-color: #fff64f;
+  color:#000;
+  border-radius: 0px 1.5vw 1.5vw 1.8vw;
+  padding: 1vw;
+  margin: 1.5vw 0;
+}
+body .card #message-section #user {
+  border: 1.5px solid #000;
+  border-radius: 1.5vw 0vw 1.5vw 1.8vw;
+  background-color: #000;
+  float: right;
+}
+body .card #message-section #user #user-response {
+  color: #fff64f;
+}
+body .card #message-section .message {
+  color: #000;
+  clear: both;
+  line-height: 1.2vw;
+  font-size: 1.2vw;
+  padding: 8px;
+  position: relative;
+  margin: 8px;
+  max-width: 85%;
+  word-wrap: break-word;
+  z-index: 2;
+}
+body .card #input-section {
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  overflow: hidden;
+  height: 6vw;
+  width: 100%;  
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+body .card #input-section input {
+  color: #000;
+  min-width: 0.5vw;
+  outline:#000;
+  height: 5vw;
+  width: 26vw;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+body .card .send {
+  background: transparent;
+  color: #fff64f;
+  border: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+  margin-left: 2vw;
+  margin-right: 0vw;
+  padding: 0;
+  position: relative;
+  outline: none;
+}
+body .card .send .circle {
+  position: relative;
+  width: 4.8vw;
+  height: 4.8vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body .card .send .circle i {
+  font-size: 3vw;
+  margin-left: -1vw;
+  margin-top: 1vw;
+}
