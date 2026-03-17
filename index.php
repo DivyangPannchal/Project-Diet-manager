@@ -1,71 +1,135 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-  <title>Login</title>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-  <!-- Bootstrap CSS v5.2.1 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="style1.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TDM — System Access</title>
+  <link rel="stylesheet" href="scifi.css">
   <style>
-    body {
-      background-image: url('bgimage4.jpg'); 
-      background-size: cover;
-      background-position: center;
-      background-repeat:repeat;
-      height: 100%;
-      margin: 0;
-      font-family: 'Arial', sans-serif; /* Add your preferred font-family */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
     }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 3rem 2.5rem;
+    }
+    .auth-logo {
+      font-family: var(--font-head);
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+      text-align: center;
+      margin-bottom: 0.3rem;
+      animation: flicker 5s infinite;
+    }
+    .auth-tagline {
+      text-align: center;
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+    .auth-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      color: var(--cyan);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      color: var(--green-neon);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green-neon);
+      box-shadow: 0 0 8px var(--green-neon);
+      animation: blink-dot 1.5s infinite;
+    }
+    .error-msg {
+      background: rgba(255,26,75,0.1);
+      border: 1px solid rgba(255,26,75,0.4);
+      color: var(--red-neon);
+      padding: 0.7rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+    .auth-footer a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--trans);
+    }
+    .auth-footer a:hover { text-shadow: var(--shadow-cyan); }
   </style>
 </head>
-
 <body>
+<div class="auth-page">
+  <div class="auth-card scifi-panel corner-decor animate-float">
 
+    <div class="auth-logo">TDM</div>
+    <div class="auth-tagline">Transform Diet Management</div>
 
-  <section class="vh-100" >
-    <div class="container py-5 h-100">
-      <div class="row d-flex align-items-center justify-content-center h-100">
-        <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-          <form action="login.php" method="post">
-          <p class="text-center h1 fw-bold mb-4 mx-1 mx-md-3 mt-3" style="color: black;">Login</p>
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-            <label class="form-label" for="form1Example13" style="color: black;"><i class="bi bi-person-circle"></i> Email-id</label>
-              <input type="email" id="form1Example13" class="form-control form-control-lg py-3" name="username" autocomplete="off" placeholder="enter your email-id" style="border-radius:25px ;" />
-
-            </div>
-
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-            <label class="form-label" for="form1Example23" style="color: black;"><i class="bi bi-chat-left-dots-fill"></i> Password</label>
-              <input type="password" id="form1Example23" class="form-control form-control-lg py-3" name="password" autocomplete="off" placeholder="enter your password" style="border-radius:25px ;" />
-
-            </div>
-
-
-            <!-- Submit button -->
-            <!-- <button type="submit" class="btn btn-primary btn-lg">Login in</button> -->
-            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-              <input type="submit" value="Sign in" name="login" class="btn btn-warning btn-lg text-light my-2 py-3" style="width:100% ; border-radius: 30px; font-weight:600;" />
-            </div>
-
-          </form><br>
-          <p align="center" style="color: black;">I don't have any account <a href="register.php" class="text-warning" style="font-weight:600;text-decoration:none;">Register Here</a></p>
-        </div>
-      </div>
+    <div class="status-line">
+      <span class="status-dot"></span>
+      System Online — Awaiting Authentication
     </div>
-  </section>
-  <!-- Bootstrap JavaScript Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-  </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-  </script>
+    <div class="auth-title">SYSTEM ACCESS</div>
+
+    <?php
+      session_start();
+      if (isset($_SESSION['error'])) {
+        echo '<div class="error-msg">⚠ ' . htmlspecialchars($_SESSION['error']) . '</div>';
+        unset($_SESSION['error']);
+      }
+    ?>
+
+    <form action="login.php" method="post">
+      <div class="sf-form-group">
+        <label class="sf-label" for="login-email">▸ Identification Code</label>
+        <input type="email" id="login-email" class="sf-input" name="username" autocomplete="off" placeholder="enter your email" required>
+      </div>
+      <div class="sf-form-group">
+        <label class="sf-label" for="login-pass">▸ Access Key</label>
+        <input type="password" id="login-pass" class="sf-input" name="password" autocomplete="off" placeholder="enter your password" required>
+      </div>
+      <button type="submit" name="login" class="sf-btn sf-btn-block sf-btn-lg" style="margin-top:0.5rem;">
+        INITIATE ACCESS
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      No account? <a href="register.php">Register Here</a>
+    </div>
+  </div>
+</div>
 </body>
-
 </html>

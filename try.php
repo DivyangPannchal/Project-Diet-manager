@@ -1,174 +1,203 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>TDM</title>
-    <link rel="stylesheet" type="text/css" href="todo1.css">
-  <style>
-    .back{
-   color: #fff;
-   padding: 10px;
-   width:30px;
-   margin: top 10px;
-   background-color: #4CAF50;
-   cursor: pointer;
-   margin-top: 20px;
-   margin-left:20px;
-   z-index: 8px;
-   border-radius:10px;
+<?php
+session_start();
+if(!isset($_SESSION['username'])) { header("Location: index.php"); exit(); }
+
+// Include unified connection
+include_once('connection.php');
+
+function loadTasks($pdo) {
+    $stmt = $pdo->query("SELECT * FROM tasks ORDER BY id DESC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-body {
-      background-image: url('bgimage4.jpg'); 
-      background-size: cover;
-      background-position: center;
-      background-repeat:repeat;
-      height: 100%;
-      margin: 0;
-      font-family: 'Arial', sans-serif; /* Add your preferred font-family */
+function addTask($pdo, $task) {
+    $stmt = $pdo->prepare("INSERT INTO tasks (task) VALUES (:task)");
+    $stmt->execute(['task' => $task]);
+}
+function deleteTask($pdo, $id) {
+    $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+}
+
+if (isset($_POST['editTask']) && isset($_POST['editId'])) {
+    $editId = $_POST['editId'];
+    $editTask = trim($_POST['editTask']);
+    if (!empty($editTask)) {
+        $stmt = $pdo->prepare("UPDATE tasks SET task = :task WHERE id = :id");
+        $stmt->execute(['task' => $editTask, 'id' => $editId]);
     }
-</style>
-    <script>
-        function toggleEditForm(index) {
-            var editForm = document.getElementById('editForm_' + index);
-            if (editForm.style.display === 'none') {
-                editForm.style.display = 'block';
-            } else {
-                editForm.style.display = 'none';
-            }
-        }
-    </script>
+}
+
+if (isset($_POST['task'])) {
+    $task = trim($_POST['task']);
+    if (!empty($task)) addTask($pdo, $task);
+}
+
+if (isset($_GET['delete'])) {
+    deleteTask($pdo, $_GET['delete']);
+    header('Location: try.php');
+    exit;
+}
+
+$tasks = loadTasks($pdo);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDM — Mission Planner</title>
+  <link rel="stylesheet" href="scifi.css">
+  <style>
+    .todo-page { padding: 5rem 2rem 3rem; }
+    .todo-inner { max-width: 800px; margin: 0 auto; }
+
+    .add-form-panel { padding: 2rem; margin-bottom: 2rem; }
+    .add-row { display: flex; gap: 0.8rem; }
+    .add-row input { flex: 1; }
+
+    .task-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .task-item {
+      background: rgba(0,20,50,0.55);
+      border: 1px solid rgba(0,245,255,0.2);
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: var(--trans);
+    }
+    .task-item:hover { border-color: rgba(0,245,255,0.5); }
+
+    .task-num {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      color: var(--cyan-dim);
+      min-width: 30px;
+      letter-spacing: 1px;
+    }
+    .task-text {
+      flex: 1;
+      font-size: 1rem;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+    }
+    .task-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+    .edit-form-inline {
+      display: none;
+      margin-top: 0.8rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      padding-top: 0.8rem;
+    }
+    .edit-row { display: flex; gap: 0.6rem; }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+  </style>
 </head>
 <body>
- 
-  <headerlink style="display: flex; justify-content: right;">
-  <span id="logo" style="margin: 1.6rem 0;cursor: pointer; margin-right: 600px; color: white; font-size: 40px; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    >TDM</span>
-   <span id="Home" style="margin: 1.6rem 0;cursor: pointer; margin-right: 25px; color: black; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">Home</span>
-    <span id="BMI Calculator" style="margin: 1.6rem 0;cursor: pointer; margin-ri
-   ght: 20px; color: black; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">BMI Calculator </span>
-    <span id="diettips" style="margin: 1.6rem 0; margin-right: 25px; cursor: pointer;color: black; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">Diet tips</span>
-    <span id="ToDo" style="margin: 1.6rem 0; margin-right: 25px; color: black; cursor: pointer;font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">ToDo</span>
-    <span id="Today" style="margin: 1.6rem 0; margin-right: 25px; color: black;cursor: pointer; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">Today</span>
-    <span id="Chatbot" style="margin: 1.6rem 0; margin-right: 25px; color: black;cursor: pointer; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">Chatbot</span>
 
-
-         <span id="logout" style="margin: 1.6rem 0; margin-right: 25px; color: black;cursor: pointer; font-size: 1.2rem; font-weight: bold; -webkit-transition: var(--trans); -o-transition: var(--trans); transition: var(--trans);"
-    onmouseover="this.style.color='white'" onmouseout="this.style.color='black'">Logout</span>
-
+<!-- NAVBAR -->
+<nav class="sf-nav" id="sfNav">
+  <a href="index.html" class="sf-logo">TDM</a>
+  <ul class="sf-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bmi.html">BMI Calc</a></li>
+    <li><a href="deittipshtml.html">Diet Tips</a></li>
+    <li><a href="try.php" class="active">To-Do</a></li>
+    <li><a href="today.html">Today</a></li>
+    <li><a href="aibot.html">NutriBot</a></li>
+    <li><a href="index.php" class="logout-link">Logout</a></li>
+  </ul>
+  <button class="sf-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="sf-mobile-menu" id="mobileMenu">
+  <button class="sf-mobile-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="bmi.html">BMI Calculator</a>
+  <a href="deittipshtml.html">Diet Tips</a>
+  <a href="try.php">To-Do List</a>
+  <a href="today.html">Today</a>
+  <a href="aibot.html">NutriBot AI</a>
+  <a href="index.php" style="color:var(--red-neon)">Logout</a>
 </div>
-    </headerlink>
-    
-    <div class="container">
-        <h2>To-Do List</h2>
 
-        <?php
-        
-        $host = 'localhost';
-        $dbname = 'todo_list';
-        $username = 'root';
-        $password = '';
-        try {
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
-        function loadTasks($pdo) {
-            $stmt = $pdo->query("SELECT * FROM tasks");
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-        function addTask($pdo, $task) {
-            $stmt = $pdo->prepare("INSERT INTO tasks (task) VALUES (:task)");
-            $stmt->execute(['task' => $task]);
-        }
-        
-        function deleteTask($pdo, $id) {
-            $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = :id");
-            $stmt->execute(['id' => $id]);
-        }
+<div class="page-content todo-page">
+  <div class="todo-inner">
+    <h2 class="sf-section-title animate-float">MISSION PLANNER</h2>
+    <div class="sf-divider"></div>
+    <p class="sf-section-subtitle">Track and manage your daily health missions</p>
 
-        if (isset($_POST['editTask']) && isset($_POST['editId'])) {
-            $editId = $_POST['editId'];
-            $editTask = trim($_POST['editTask']);
-            if (!empty($editTask)) {
-                $stmt = $pdo->prepare("UPDATE tasks SET task = :task WHERE id = :id");
-                $stmt->execute(['task' => $editTask, 'id' => $editId]);
-            }
-        }
-        $tasks = loadTasks($pdo);
-
-        if (isset($_POST['task'])) {
-            $task = trim($_POST['task']);
-            if (!empty($task)) {
-                addTask($pdo, $task);
-                $tasks = loadTasks($pdo);
-            }
-        }
-
-        if (isset($_GET['delete'])) {
-            $id = $_GET['delete'];
-            deleteTask($pdo, $id);
-           
-            $tasks = loadTasks($pdo);
-        }
-        ?>
-
-        <form method="POST" action="">
-            <input type="text" name="task" placeholder="Enter task" required>
-            <button type="submit">Add Task</button>
-        </form>
-
-        <ul>
-            <?php foreach ($tasks as $index => $task): ?>
-                <li>
-                    <span><?php echo $task['task']; ?></span>
-                    <a href="?delete=<?php echo $task['id']; ?>">Delete</a>
-                    <button onclick="toggleEditForm(<?php echo $index; ?>)">Edit</button>
-                    <div id="editForm_<?php echo $index; ?>" class="edit-form" style="display: none;">
-                        <form method="POST" action="">
-                            <input type="hidden" name="editId" value="<?php echo $task['id']; ?>">
-                            <input type="text" name="editTask" value="<?php echo $task['task']; ?>" required>
-                            <button type="submit">Save</button>
-                            <button type="button" onclick="toggleEditForm(<?php echo $index; ?>)">Cancel</button>
-                        </form>
-                    </div>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+    <!-- ADD TASK -->
+    <div class="scifi-panel corner-decor add-form-panel animate-float">
+      <div style="font-family:var(--font-head);font-size:0.85rem;letter-spacing:3px;color:var(--cyan);margin-bottom:1rem">
+        ▸ NEW MISSION DIRECTIVE
+      </div>
+      <form method="POST" action="">
+        <div class="add-row">
+          <input type="text" name="task" class="sf-input" placeholder="Enter your mission objective..." required>
+          <button type="submit" class="sf-btn">+ ADD</button>
+        </div>
+      </form>
     </div>
-    <script>
-         document.getElementById('logo').addEventListener('click', function() {
-            window.location.href = 'index.html';
-        });
-        document.getElementById('Home').addEventListener('click', function() {
-            window.location.href = 'index.html';
-        });
 
-        document.getElementById('BMI Calculator').addEventListener('click', function() {
-            window.location.href = 'bmi.html';
-        });
+    <!-- TASK COUNT -->
+    <div style="font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem">
+      <?php echo count($tasks); ?> Mission<?php echo count($tasks) !== 1 ? 's' : ''; ?> Active
+    </div>
 
-        document.getElementById('diettips').addEventListener('click', function() {
-            window.location.href = 'diettips.html';
-        });
-        document.getElementById('ToDo').addEventListener('click', function() {
-            window.location.href = 'try.php';
-        });
-        document.getElementById('Today').addEventListener('click', function() {
-            window.location.href = 'today.html';
-        });
-        document.getElementById('Chatbot').addEventListener('click', function() {
-            window.location.href = 'aibot.html';
-        });
-       document.getElementById('logout').addEventListener('click', function() {
-            window.location.href = 'index.php';
-        });
-    </script>
+    <!-- TASKS -->
+    <?php if (empty($tasks)): ?>
+      <div class="scifi-panel corner-decor empty-state">
+        ◌ No missions yet. Add a directive above.
+      </div>
+    <?php else: ?>
+    <ul class="task-list">
+      <?php foreach ($tasks as $index => $task): ?>
+      <li class="scifi-panel task-item" style="flex-wrap:wrap">
+        <span class="task-num"><?= str_pad($index + 1, 2, '0', STR_PAD_LEFT) ?></span>
+        <span class="task-text"><?= htmlspecialchars($task['task']) ?></span>
+        <div class="task-actions">
+          <button class="sf-btn sf-btn-sm" onclick="toggleEdit(<?= $index ?>)">EDIT</button>
+          <a href="?delete=<?= $task['id'] ?>" class="sf-btn sf-btn-sm sf-btn-danger"
+             onclick="return confirm('Delete this mission?')">DEL</a>
+        </div>
+        <!-- Edit inline form -->
+        <div class="edit-form-inline" id="editForm_<?= $index ?>" style="width:100%">
+          <form method="POST" action="">
+            <input type="hidden" name="editId" value="<?= $task['id'] ?>">
+            <div class="edit-row">
+              <input type="text" name="editTask" class="sf-input" value="<?= htmlspecialchars($task['task']) ?>" required>
+              <button type="submit" class="sf-btn sf-btn-sm">SAVE</button>
+              <button type="button" class="sf-btn sf-btn-sm sf-btn-danger" onclick="toggleEdit(<?= $index ?>)">✕</button>
+            </div>
+          </form>
+        </div>
+      </li>
+      <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
 
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('sfNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+  document.getElementById('menuClose').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+
+  function toggleEdit(index) {
+    const f = document.getElementById('editForm_' + index);
+    f.style.display = f.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
 </body>
 </html>

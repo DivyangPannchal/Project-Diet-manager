@@ -3,119 +3,257 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TMD</title>
-        <!-- font awesome cdn -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <!-- normalize css -->
-        <link rel = "stylesheet" href = "normalize.css">
-        <!-- custom css -->
-        <link rel = "stylesheet" href = "utility.css">
-        <link rel = "stylesheet" href = "index.css">
-        <link rel = "stylesheet" href = "responsive.css">
+  <title>TDM — Transform Diet Management</title>
+  <link rel="stylesheet" href="scifi.css">
+  <style>
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      border: 1px solid rgba(0,245,255,0.3);
+      background: rgba(0,245,255,0.07);
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: var(--shadow-cyan);
+      margin-bottom: 0.5rem;
+      animation: float-up 0.8s ease both;
+    }
+    .hero h1 .accent { color: var(--cyan); }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 1.2rem auto 2.5rem;
+      letter-spacing: 1px;
+      line-height: 1.7;
+      animation: float-up 0.9s ease both;
+    }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: float-up 1s ease both; }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 1.5rem 2rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      border-bottom: 1px solid rgba(0,245,255,0.1);
+    }
+    .stat-item {
+      text-align: center;
+      padding: 1rem 2.5rem;
+    }
+    .stat-num {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── Features ── */
+    .features-section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      padding: 2rem 1.8rem;
+      text-decoration: none;
+      display: block;
+      transition: var(--trans);
+    }
+    .feature-card:hover { transform: translateY(-4px); }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .feature-title {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      margin-bottom: 0.7rem;
+    }
+    .feature-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .feature-arrow {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--cyan-dim);
+      text-transform: uppercase;
+      transition: var(--trans);
+    }
+    .feature-card:hover .feature-arrow { color: var(--cyan); letter-spacing: 4px; }
+  </style>
 </head>
 <body>
 
-  <nav class = "navbar">
-    <div class = "container flex">
-      <a href = "index.html" class = "site-brand">
-        <span>TDM</span>
-    </a>
-        <button type = "button" id = "navbar-show-btn" class = "flex">
-            <i class = "fas fa-bars"></i>
-        </button>
-        <div id = "navbar-collapse">
-            <button type = "button" id = "navbar-close-btn" class = "flex">
-                <i class = "fas fa-times"></i>
-            </button>
-            <ul class = "navbar-nav">
-                <li class = "nav-item">
-                    <a href = "index.html" class = "nav-link">Home</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "bmi.html" class = "nav-link">BMI calculator</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "deittipshtml.html" class = "nav-link">Diet Tips</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "try.php" class = "nav-link">ToDo</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "today.html" class = "nav-link">Today</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "aibot.html" class = "nav-link">Chatbot</a>
-                </li>
-                <li class = "nav-item">
-                  <a href = "index.php" class = "nav-link">Logout</a>
-              </li>
-            </ul>
-        </div>
-    </div>
+<!-- NAVBAR -->
+<nav class="sf-nav" id="sfNav">
+  <a href="index.html" class="sf-logo">TDM</a>
+  <ul class="sf-nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="bmi.html">BMI Calc</a></li>
+    <li><a href="deittipshtml.html">Diet Tips</a></li>
+    <li><a href="try.php">To-Do</a></li>
+    <li><a href="today.html">Today</a></li>
+    <li><a href="aibot.html">NutriBot</a></li>
+    <li><a href="index.php" class="logout-link">Logout</a></li>
+  </ul>
+  <button class="sf-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- header -->
-<header class = "flex">
-  <div class = "container">
-      <div class = "header-title">
-          <h1>Creating a Healthy Home Environment</h1>
-          <p><h2>Welcome to TDM: The Foundation for Successful Diet Planning</h2>
-              <h3>where we believe that the journey to a healthier lifestyle begins at home. Our homes serve as the cornerstone of our daily routines, influencing our habits, choices, and overall well-being. Creating a conducive environment within our homes is pivotal to achieving and sustaining dietary goals. Join us as we explore how to transform your home into a nurturing space that supports your journey towards a healthier you.</h3></p>
+<!-- MOBILE MENU -->
+<div class="sf-mobile-menu" id="mobileMenu">
+  <button class="sf-mobile-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="bmi.html">BMI Calculator</a>
+  <a href="deittipshtml.html">Diet Tips</a>
+  <a href="try.php">To-Do List</a>
+  <a href="today.html">Today</a>
+  <a href="aibot.html">NutriBot AI</a>
+  <a href="index.php" style="color:var(--red-neon)">Logout</a>
+</div>
+
+<div class="page-content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-badge">⬡ Advanced Nutrition Intelligence System</div>
+      <h1>Transform Your<br><span class="accent">Diet. Optimize</span><br>Your Life.</h1>
+      <p class="hero-sub">
+        TDM uses intelligent tools to help you track, plan, and optimize your nutrition journey — powered by AI and cutting-edge data.
+      </p>
+      <div class="hero-actions">
+        <a href="bmi.html" class="sf-btn sf-btn-lg">Analyze My BMI</a>
+        <a href="aibot.html" class="sf-btn sf-btn-purple sf-btn-lg">Talk to NutriBot</a>
       </div>
-  </div>
-</header>
-<!-- header -->
+    </div>
+  </section>
 
-<br><div class = "blog-row">
-<div class = "blog-item my-2 shadow">
-  <div class = "blog-item-top">
-      <img src = "image1.png" alt = "blog">
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Smart Tools</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">AI</div>
+      <div class="stat-label">Powered Chatbot</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100+</div>
+      <div class="stat-label">Diet Tips</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Available</div>
+    </div>
   </div>
-  <div class = "blog-item-bottom">
-      <a href = "#">"Personalized Diet Plans Just for You"</a>
-      <p class = "text">Say goodbye to one-size-fits-all diets! At TDM, we understand that each person has distinct dietary requirements and preferences. That's why we offer personalized diet plans crafted specifically for you. Our team of nutrition experts takes into account your health goals, lifestyle, taste preferences, and any dietary restrictions you may have to design a plan that fits seamlessly into your life. Whether you're a busy professional, a dedicated athlete, or a busy parent, TDM ensures that your diet works for you.</p>
-  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <h2 class="sf-section-title">MISSION MODULES</h2>
+    <div class="sf-divider"></div>
+    <p class="sf-section-subtitle">Select a module to begin your optimization sequence</p>
+
+    <div class="features-grid">
+      <a href="bmi.html" class="feature-card scifi-panel corner-decor">
+        <span class="feature-icon">⚖</span>
+        <div class="feature-title">BMI ANALYZER</div>
+        <p class="feature-desc">Calculate your Body Mass Index with precision. Get instant analysis of your current health status and tailored recommendations.</p>
+        <span class="feature-arrow">Access Module →</span>
+      </a>
+
+      <a href="deittipshtml.html" class="feature-card scifi-panel corner-decor">
+        <span class="feature-icon">🥗</span>
+        <div class="feature-title">DIET INTELLIGENCE</div>
+        <p class="feature-desc">Generate personalized meal plans and explore curated Do's and Don'ts to fuel your nutrition journey.</p>
+        <span class="feature-arrow">Access Module →</span>
+      </a>
+
+      <a href="aibot.html" class="feature-card scifi-panel scifi-panel-purple corner-decor">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-title" style="color:var(--purple);text-shadow:var(--shadow-purple)">NUTRIBOT AI</div>
+        <p class="feature-desc">Converse with NutriBot — your personal AI diet expert powered by Groq's advanced language model. Ask anything nutrition.</p>
+        <span class="feature-arrow" style="color:var(--purple-dim)">Access Module →</span>
+      </a>
+
+      <a href="try.php" class="feature-card scifi-panel corner-decor">
+        <span class="feature-icon">✅</span>
+        <div class="feature-title">MISSION PLANNER</div>
+        <p class="feature-desc">Organize your daily health tasks with an intelligent to-do list. Track your progress and stay on target.</p>
+        <span class="feature-arrow">Access Module →</span>
+      </a>
+
+      <a href="today.html" class="feature-card scifi-panel corner-decor">
+        <span class="feature-icon">📅</span>
+        <div class="feature-title">TODAY'S BRIEFING</div>
+        <p class="feature-desc">Get your daily health and nutrition briefing. Plan your meals and activities for the day ahead.</p>
+        <span class="feature-arrow">Access Module →</span>
+      </a>
+    </div>
+  </section>
+
 </div>
 
-<div class = "blog-item my-2 shadow">
-  <div class = "blog-item-top">
-      <img src = "image2.png" alt = "blog">
-  </div>
-  <div class = "blog-item-bottom">
-      <a href = "#">"Unlock Your Potential with Nutritional Guidance"</a>
-      <p class = "text">Embarking on a journey towards a healthier lifestyle can be overwhelming, but with TDM, you're never alone. Our platform provides comprehensive nutritional guidance every step of the way. From educational resources on the importance of balanced nutrition to tips for overcoming common diet pitfalls, we equip you with the knowledge and tools you need to succeed. With TDM, you'll gain a deeper understanding of how food affects your body and discover sustainable strategies for long-term health and vitality.</p>
-  </div>
-</div>
-
-<div class = "blog-item my-2 shadow">
-  <div class = "blog-item-top">
-      <img src = "image3.png" alt = "blog">
-  </div>
-  <div class = "blog-item-bottom">
-      <a href = "#">"Tailored Meal Plans"</a>
-      <p class = "text">Gone are the days of generic meal plans that leave you feeling uninspired and dissatisfied. At TDM, we believe in the power of customization. Our expert dietitians curate personalized meal plans based on your dietary preferences, restrictions, and health objectives. Whether you're aiming for weight loss, muscle gain, or simply looking to improve your overall well-being, we've got you covered.</p>
-  </div>
-</div>
-
-<div class = "blog-item my-2 shadow">
-  <div class = "blog-item-top">
-      <img src = "image4.png" alt = "blog">
-  </div>
-  <div class = "blog-item-bottom">
-      <a href = "#">"Nutritional Guidance"</a>
-      <p class = "text">Understanding the importance of proper nutrition is key to achieving long-term success in your health journey. With TDM, you'll receive expert guidance on making informed food choices that nourish your body and mind. Our platform provides valuable insights into portion control, macronutrient balance, and the incorporation of wholesome ingredients, empowering you to take control of your dietary habits.</p>
-  </div>
-</div>
- 
-<div class = "blog-item my-2 shadow">
-  <div class = "blog-item-top">
-      <img src = "image5.png" alt = "blog">
-  </div>
-  <div class = "blog-item-bottom">
-      <a href = "#">"Start Your Journey Today"</a>
-      <p class = "text">Ready to take the first step towards a healthier, happier you? Join the TDM community today and embark on a transformative journey towards better nutrition and well-being. With our expert guidance, personalized solutions, and supportive community, achieving your dietary goals has never been easier—or more rewarding. Let's make healthy eating a way of life together at Transform Your Diet (TDM).</p>
-  </div>
-</div>
-  <script src="script.js"></script>
+<script>
+  // Navbar scroll effect
+  const nav = document.getElementById('sfNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+  // Mobile menu
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.add('open');
+  });
+  document.getElementById('menuClose').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+</script>
 </body>
 </html>

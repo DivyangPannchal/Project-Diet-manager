@@ -1,119 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDM</title>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-     <link rel = "stylesheet" href = "normalize.css">
-     <link rel = "stylesheet" href = "utility.css">
-     <link rel = "stylesheet" href = "bmi.css">
-     <link rel = "stylesheet" href = "responsive.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDM — BMI Analyzer</title>
+  <link rel="stylesheet" href="scifi.css">
+  <style>
+    .bmi-page {
+      padding: 5rem 2rem 3rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .bmi-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 2rem;
+    }
+    @media (max-width: 700px) { .bmi-container { grid-template-columns: 1fr; } }
+
+    .bmi-form-panel { padding: 2.5rem; }
+
+    .gender-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+    }
+    .gender-option { display: none; }
+    .gender-label {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      padding: 0.6rem 0.5rem;
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(0,20,50,0.4);
+      transition: var(--trans);
+    }
+    .gender-option:checked + .gender-label {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(0,245,255,0.1);
+      box-shadow: 0 0 10px rgba(0,245,255,0.3);
+    }
+
+    /* Result panel */
+    .bmi-result-panel {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .bmi-gauge-wrap {
+      position: relative;
+      width: 180px; height: 180px;
+      margin: 1.5rem auto;
+    }
+    .bmi-gauge-ring {
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 4px solid rgba(0,245,255,0.15);
+      box-shadow: 0 0 30px rgba(0,245,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.5s ease;
+    }
+    .bmi-number {
+      font-family: var(--font-head);
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+      transition: all 0.5s ease;
+    }
+    .bmi-unit {
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+    .bmi-category {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      margin: 0.5rem 0;
+    }
+    .bmi-comment {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    /* Scale bar */
+    .bmi-scale {
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .bmi-scale-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg,
+        #00f5ff 0%, #00ff88 25%, #ffe600 50%, #ff7c20 75%, #ff1a4b 100%
+      );
+      position: relative;
+      margin: 0.5rem 0;
+    }
+    .bmi-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+    .bmi-pointer {
+      position: absolute;
+      top: -4px;
+      width: 4px;
+      height: 16px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #fff;
+      transition: left 0.6s ease;
+      transform: translateX(-50%);
+      left: 0%;
+    }
+  </style>
 </head>
 <body>
-    
-  <nav class = "navbar">
-    <div class = "container flex">
-      <a href = "index.html" class = "site-brand">
-        <span>TDM</span>
-    </a>
-        <button type = "button" id = "navbar-show-btn" class = "flex">
-            <i class = "fas fa-bars"></i>
-        </button>
-        <div id = "navbar-collapse">
-            <button type = "button" id = "navbar-close-btn" class = "flex">
-                <i class = "fas fa-times"></i>
-            </button>
-            <ul class = "navbar-nav">
-                <li class = "nav-item">
-                    <a href = "index.html" class = "nav-link">Home</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "bmi0.html" class = "nav-link">BMI calculator</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "deittipshtml.html" class = "nav-link">Diet Tips</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "try.php" class = "nav-link">ToDo</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "today.html" class = "nav-link">Today</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "aibot.html" class = "nav-link">Chatbot</a>
-                </li>
-                <li class = "nav-item">
-                  <a href = "index.php" class = "nav-link">Logout</a>
-              </li>
-            </ul>
-        </div>
-    </div>
+
+<!-- NAVBAR -->
+<nav class="sf-nav" id="sfNav">
+  <a href="index.html" class="sf-logo">TDM</a>
+  <ul class="sf-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bmi.html" class="active">BMI Calc</a></li>
+    <li><a href="deittipshtml.html">Diet Tips</a></li>
+    <li><a href="try.php">To-Do</a></li>
+    <li><a href="today.html">Today</a></li>
+    <li><a href="aibot.html">NutriBot</a></li>
+    <li><a href="index.php" class="logout-link">Logout</a></li>
+  </ul>
+  <button class="sf-hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
+<div class="sf-mobile-menu" id="mobileMenu">
+  <button class="sf-mobile-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="bmi.html">BMI Calculator</a>
+  <a href="deittipshtml.html">Diet Tips</a>
+  <a href="try.php">To-Do List</a>
+  <a href="today.html">Today</a>
+  <a href="aibot.html">NutriBot AI</a>
+  <a href="index.php" style="color:var(--red-neon)">Logout</a>
+</div>
 
-<!-- header -->
-<header class = "flex">
-  <div class = "container">
-      <div class = "header-title">
-          <h1>BMI Calculator</h1>
+<div class="page-content bmi-page">
+  <h2 class="sf-section-title animate-float">BMI ANALYZER</h2>
+  <div class="sf-divider"></div>
+  <p class="sf-section-subtitle">Enter your biometrics for a precision health analysis</p>
+
+  <div class="bmi-container">
+    <!-- FORM -->
+    <div class="scifi-panel corner-decor bmi-form-panel animate-float">
+      <div class="sf-form-group">
+        <label class="sf-label">▸ Age (years)</label>
+        <input type="number" id="age" class="sf-input" placeholder="e.g. 25" min="1" max="120">
       </div>
-  </div>
-</header>
-<!-- header -->
 
-    <div class="container">
-        <div class="box">
-          <div class="content">
-
-
-            <div class="input">
-                <label for="height">Age</label>
-                <input type="text" class="text-input" id="age" autocomplete="off" required/>
-            </div>
-
-            <div class="gender">
-
-                <label class="container">
-                    <input type="radio" name="radio" id="m"><p class="text">Male</p>
-                    <span class="checkmark"></span>
-                  </label>
-
-
-                <label class="container">
-                    <input type="radio" name="radio" id="f" ><p class="text">Female</p>
-                      <span class="checkmark"></span>
-                    </label>
-
-                <label class="container">
-                    <input type="radio" name="radio" id="t" ><p class="text">Transgender</p>
-                      <span class="checkmark"></span>
-                    </label>    
-
-            </div>
-
-            <div class="containerHW">
-            <div class="inputH">
-              <label for="height">Height(cm)</label>
-              <input type="number" id="height" required>
-            </div>
-
-            <div class="inputW">
-              <label for="weight">Weight(kg)</label>
-              <input type="number" id="weight" required>
-            </div>
-          </div>
-
-            <button class="calculate" id="submit" onclick="calculate();">Calculate BMI</button>
-          </div>
-          <div class="result">
-            <p>Your BMI is</p>
-            <div id="result">00.00</div>
-            <p class="comment"></p>
-          </div>
-
+      <div class="sf-form-group">
+        <label class="sf-label">▸ Gender</label>
+        <div class="gender-row">
+          <input type="radio" name="gender" id="gm" class="gender-option" value="male">
+          <label for="gm" class="gender-label">♂ Male</label>
+          <input type="radio" name="gender" id="gf" class="gender-option" value="female">
+          <label for="gf" class="gender-label">♀ Female</label>
+          <input type="radio" name="gender" id="gt" class="gender-option" value="other">
+          <label for="gt" class="gender-label">⚧ Other</label>
         </div>
-      </div><br>
-<script src="bmi.js"></script>
+      </div>
+
+      <div class="sf-form-group">
+        <label class="sf-label">▸ Height (cm)</label>
+        <input type="number" id="height" class="sf-input" placeholder="e.g. 170" min="50" max="300">
+      </div>
+
+      <div class="sf-form-group">
+        <label class="sf-label">▸ Weight (kg)</label>
+        <input type="number" id="weight" class="sf-input" placeholder="e.g. 65" min="1" max="500">
+      </div>
+
+      <button class="sf-btn sf-btn-block sf-btn-lg" onclick="calculateBMI()">ANALYZE BMI</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="scifi-panel corner-decor bmi-result-panel animate-float" id="resultPanel">
+      <div class="sf-label" style="letter-spacing:3px">ANALYSIS RESULT</div>
+      <div class="bmi-gauge-wrap">
+        <div class="bmi-gauge-ring" id="gaugeRing">
+          <div>
+            <div class="bmi-number" id="bmiNum">--</div>
+            <div class="bmi-unit">BMI INDEX</div>
+          </div>
+        </div>
+      </div>
+      <div class="bmi-category" id="bmiCat">AWAITING DATA</div>
+      <div class="bmi-comment" id="bmiComment">Enter your measurements and click Analyze to see your result.</div>
+
+      <div class="bmi-scale" id="bmiScale" style="display:none">
+        <div class="bmi-scale-bar">
+          <div class="bmi-pointer" id="bmiPtr"></div>
+        </div>
+        <div class="bmi-scale-labels">
+          <span>Underweight</span>
+          <span>Normal</span>
+          <span>Overweight</span>
+          <span>Obese</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Nav
+  const nav = document.getElementById('sfNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+  document.getElementById('menuClose').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+
+  function calculateBMI() {
+    const h = parseFloat(document.getElementById('height').value);
+    const w = parseFloat(document.getElementById('weight').value);
+    const a = parseFloat(document.getElementById('age').value);
+
+    if (!h || !w || h <= 0 || w <= 0) {
+      alert('Please enter valid height and weight.');
+      return;
+    }
+
+    const hm = h / 100;
+    const bmi = (w / (hm * hm)).toFixed(1);
+    document.getElementById('bmiNum').textContent = bmi;
+
+    let cat, color, shadow, comment, pct;
+    const b = parseFloat(bmi);
+    if (b < 18.5) {
+      cat = 'UNDERWEIGHT'; color = '#00f5ff'; shadow = '0 0 20px rgba(0,245,255,0.8)';
+      comment = 'Your BMI indicates you are underweight. Consider a calorie-dense, nutrient-rich diet. Consult a nutritionist.';
+      pct = (b / 40) * 100 * 0.3;
+    } else if (b < 25) {
+      cat = 'NORMAL WEIGHT'; color = '#00ff88'; shadow = '0 0 20px rgba(0,255,136,0.8)';
+      comment = 'Excellent! Your BMI is in the healthy range. Maintain your balanced diet and active lifestyle.';
+      pct = 20 + ((b - 18.5) / 6.5) * 25;
+    } else if (b < 30) {
+      cat = 'OVERWEIGHT'; color = '#ffe600'; shadow = '0 0 20px rgba(255,230,0,0.8)';
+      comment = 'Your BMI is slightly elevated. Consider increasing physical activity and reducing processed foods.';
+      pct = 50 + ((b - 25) / 5) * 25;
+    } else {
+      cat = 'OBESE'; color = '#ff1a4b'; shadow = '0 0 20px rgba(255,26,75,0.8)';
+      comment = 'Your BMI indicates obesity. Please consult a healthcare provider for a personalized plan.';
+      pct = Math.min(90, 75 + ((b - 30) / 10) * 15);
+    }
+
+    document.getElementById('bmiCat').textContent = cat;
+    document.getElementById('bmiCat').style.color = color;
+    document.getElementById('bmiCat').style.textShadow = shadow;
+    document.getElementById('bmiNum').style.color = color;
+    document.getElementById('bmiNum').style.textShadow = shadow;
+    document.getElementById('gaugeRing').style.borderColor = color;
+    document.getElementById('gaugeRing').style.boxShadow = shadow;
+    document.getElementById('bmiComment').textContent = comment;
+    document.getElementById('bmiScale').style.display = 'block';
+    document.getElementById('bmiPtr').style.left = pct + '%';
+  }
+</script>
 </body>
 </html>

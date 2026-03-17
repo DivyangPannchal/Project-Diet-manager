@@ -3,76 +3,394 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TMD</title>
-        <!-- font awesome cdn -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <!-- normalize css -->
-        <link rel = "stylesheet" href = "normalize.css">
-        <!-- custom css -->
-        <link rel = "stylesheet" href = "utility.css">
-        <link rel = "stylesheet" href = "aibotcss.css">
-        <link rel = "stylesheet" href = "responsive.css">
+  <title>TDM — NutriBot AI</title>
+  <link rel="stylesheet" href="scifi.css">
+  <style>
+    .chat-page {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 65px;
+    }
+
+    /* Top bar */
+    .chat-topbar {
+      background: rgba(2,5,16,0.85);
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+    .bot-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00f5ff, #b000ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 15px rgba(0,245,255,0.5);
+      animation: pulse-cyan 2s infinite;
+    }
+    .bot-info { flex: 1; }
+    .bot-name {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--cyan);
+    }
+    .bot-status {
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      color: var(--green-neon);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .bot-status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green-neon);
+      box-shadow: 0 0 6px var(--green-neon);
+      animation: blink-dot 1.5s infinite;
+    }
+
+    /* Messages area */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .msg-wrap {
+      display: flex;
+      gap: 0.8rem;
+      animation: float-up 0.3s ease both;
+    }
+    .msg-wrap.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .msg-avatar.bot-av {
+      background: linear-gradient(135deg, rgba(0,245,255,0.3), rgba(176,0,255,0.3));
+      border: 1px solid rgba(0,245,255,0.4);
+      box-shadow: 0 0 10px rgba(0,245,255,0.3);
+    }
+    .msg-avatar.user-av {
+      background: rgba(176,0,255,0.2);
+      border: 1px solid rgba(176,0,255,0.4);
+    }
+
+    .msg-bubble {
+      max-width: 70%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      position: relative;
+    }
+    .bot .msg-bubble {
+      background: rgba(0,20,50,0.8);
+      border: 1px solid rgba(0,245,255,0.25);
+      color: var(--text-primary);
+      border-radius: 2px 8px 8px 8px;
+    }
+    .user .msg-bubble {
+      background: rgba(176,0,255,0.15);
+      border: 1px solid rgba(176,0,255,0.35);
+      color: var(--text-primary);
+      border-radius: 8px 2px 8px 8px;
+    }
+    .msg-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      letter-spacing: 1px;
+    }
+    .msg-wrap.user .msg-time { text-align: right; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: none;
+      gap: 0.8rem;
+      align-items: flex-end;
+      animation: float-up 0.3s ease both;
+    }
+    .typing-dots {
+      background: rgba(0,20,50,0.8);
+      border: 1px solid rgba(0,245,255,0.2);
+      border-radius: 2px 8px 8px 8px;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .typing-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: typingBounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30%          { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* Input bar */
+    .chat-input-bar {
+      background: rgba(2,5,16,0.9);
+      border-top: 1px solid rgba(0,245,255,0.15);
+      padding: 1rem 1.5rem;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-end;
+      flex-shrink: 0;
+      backdrop-filter: blur(10px);
+    }
+    #chatInput {
+      flex: 1;
+      resize: none;
+      max-height: 120px;
+      min-height: 44px;
+      background: rgba(0,20,50,0.6);
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      padding: 0.7rem 1rem;
+      outline: none;
+      transition: var(--trans);
+    }
+    #chatInput:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0,245,255,0.3);
+    }
+    #sendBtn {
+      height: 44px;
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    /* Welcome state */
+    .welcome-msg {
+      text-align: center;
+      padding: 3rem 1rem;
+      animation: float-up 0.5s ease both;
+    }
+    .welcome-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .welcome-title {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+      margin-bottom: 0.7rem;
+    }
+    .suggestion-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .chip {
+      background: rgba(0,245,255,0.07);
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--trans);
+    }
+    .chip:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,245,255,0.12); }
+  </style>
 </head>
 <body>
 
-  <nav class = "navbar">
-    <div class = "container flex">
-      <a href = "index.html" class = "site-brand">
-        <span>TDM</span>
-    </a>
-        <button type = "button" id = "navbar-show-btn" class = "flex">
-            <i class = "fas fa-bars"></i>
-        </button>
-        <div id = "navbar-collapse">
-            <button type = "button" id = "navbar-close-btn" class = "flex">
-                <i class = "fas fa-times"></i>
-            </button>
-            <ul class = "navbar-nav">
-                <li class = "nav-item">
-                    <a href = "index.html" class = "nav-link">Home</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "bmi.html" class = "nav-link">BMI calculator</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "deittipshtml.html" class = "nav-link">Diet Tips</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "try.php" class = "nav-link">ToDo</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "today.html" class = "nav-link">Today</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "aibot.html" class = "nav-link">Chatbot</a>
-                </li>
-                <li class = "nav-item">
-                  <a href = "index.php" class = "nav-link">Logout</a>
-              </li>
-            </ul>
-        </div>
-    </div>
+<!-- NAVBAR -->
+<nav class="sf-nav" id="sfNav">
+  <a href="index.html" class="sf-logo">TDM</a>
+  <ul class="sf-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bmi.html">BMI Calc</a></li>
+    <li><a href="deittipshtml.html">Diet Tips</a></li>
+    <li><a href="try.php">To-Do</a></li>
+    <li><a href="today.html">Today</a></li>
+    <li><a href="aibot.html" class="active">NutriBot</a></li>
+    <li><a href="index.php" class="logout-link">Logout</a></li>
+  </ul>
+  <button class="sf-hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
+<div class="sf-mobile-menu" id="mobileMenu">
+  <button class="sf-mobile-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="bmi.html">BMI Calculator</a>
+  <a href="deittipshtml.html">Diet Tips</a>
+  <a href="try.php">To-Do List</a>
+  <a href="today.html">Today</a>
+  <a href="aibot.html">NutriBot AI</a>
+  <a href="index.php" style="color:var(--red-neon)">Logout</a>
+</div>
 
-<!-- header -->
-<header class = "flex">
-    <div class = "bot-container">
-        <div class = "header-title">
-            <h1>Diet Bot</h1>
-        </div>
-    </div>
-  </header>
-  <!-- header -->
-
-  <div class="card">
-    <div id="header">
-        <div id="conversation" style="height: 300px; overflow-y: auto; padding: 1rem; background-color: #f5f5f5; border-radius: 10px;"></div>
-        <div style="margin-top: 10px;">
-          <input type="text" id="user-input" placeholder="Ask me about your diet..." style="width: 80%; padding: 10px;" />
-          <button onclick="askBot()" style="padding: 10px;">Send</button>
-        </div>          
+<div class="chat-page">
+  <!-- TOP BAR -->
+  <div class="chat-topbar">
+    <div class="bot-avatar">🤖</div>
+    <div class="bot-info">
+      <div class="bot-name">NUTRIBOT</div>
+      <div class="bot-status">
+        <span class="bot-status-dot"></span>
+        AI Systems Online — Groq Powered
+      </div>
     </div>
   </div>
+
+  <!-- MESSAGES -->
+  <div class="chat-messages" id="chatMessages">
+    <div class="welcome-msg" id="welcomeMsg">
+      <div class="welcome-icon">🤖</div>
+      <div class="welcome-title">NUTRIBOT ONLINE</div>
+      <p style="color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.7">
+        I am your advanced AI nutrition assistant, powered by Groq's LLaMA model. Ask me anything about diet, nutrition, and healthy living.
+      </p>
+      <div class="suggestion-chips">
+        <div class="chip" onclick="sendSuggestion('What foods should I eat to lose weight?')">Weight loss foods</div>
+        <div class="chip" onclick="sendSuggestion('Create a 1500 calorie meal plan for a day')">Daily meal plan</div>
+        <div class="chip" onclick="sendSuggestion('What is a healthy BMI range?')">Healthy BMI</div>
+        <div class="chip" onclick="sendSuggestion('Best protein sources for muscle building')">Protein sources</div>
+        <div class="chip" onclick="sendSuggestion('How much water should I drink daily?')">Hydration guide</div>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="msg-avatar bot-av">🤖</div>
+      <div class="typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div class="chat-input-bar">
+    <textarea id="chatInput" placeholder="Ask NutriBot about nutrition, diet plans, healthy eating..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="sf-btn sf-btn-sm" id="sendBtn" onclick="sendMessage()">SEND</button>
+  </div>
+</div>
+
+<script>
+  // Nav
+  const nav = document.getElementById('sfNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+  document.getElementById('menuClose').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+
+  const messagesDiv = document.getElementById('chatMessages');
+  const inputEl = document.getElementById('chatInput');
+  const typingEl = document.getElementById('typingIndicator');
+  let firstMessage = true;
+
+  function autoResize(el) {
+    el.style.height = '44px';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function appendMessage(role, text) {
+    if (firstMessage) {
+      document.getElementById('welcomeMsg').style.display = 'none';
+      firstMessage = false;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-wrap ' + (role === 'user' ? 'user' : 'bot');
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar ' + (role === 'user' ? 'user-av' : 'bot-av');
+    avatar.textContent = role === 'user' ? '👤' : '🤖';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    // Render line breaks and simple markdown bold
+    bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = getTime();
+
+    const inner = document.createElement('div');
+    inner.appendChild(bubble);
+    inner.appendChild(time);
+
+    wrap.appendChild(avatar);
+    wrap.appendChild(inner);
+
+    // Insert before typing indicator
+    messagesDiv.insertBefore(wrap, typingEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function setTyping(show) {
+    typingEl.style.display = show ? 'flex' : 'none';
+    if (show) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    inputEl.value = '';
+    inputEl.style.height = '44px';
+    appendMessage('user', text);
+    setTyping(true);
+
+    try {
+      const res = await fetch('groq_chat.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text }),
+      });
+      const data = await res.json();
+      setTyping(false);
+      if (data.reply) {
+        appendMessage('bot', data.reply);
+      } else {
+        appendMessage('bot', '⚠ Error: ' + (data.error || 'Could not get a response. Please check your Groq API key in config.php.'));
+      }
+    } catch (err) {
+      setTyping(false);
+      appendMessage('bot', '⚠ Connection error. Make sure the PHP server is running and your Groq API key is set in config.php.');
+    }
+  }
+
+  function sendSuggestion(text) {
+    inputEl.value = text;
+    sendMessage();
+  }
+</script>
 </body>
 </html>
-<script src="aibotjs.js"></script>

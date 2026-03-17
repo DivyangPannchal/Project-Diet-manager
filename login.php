@@ -3,31 +3,38 @@ session_start();
 include_once('connection.php');
 
 if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = md5($_POST['password']);
+    $username = trim($_POST['username']);
+    $password = md5($_POST['password']); 
 
     if (empty($username) && empty($_POST['password'])) {
-        echo "<script>alert('Please Fill Username and Password');</script>";
+        $_SESSION['error'] = 'Please Fill Username and Password';
+        header('location:index.php');
         exit;
     } elseif (empty($_POST['password'])) {
-        echo "<script>alert('Please Fill Password');</script>";
+        $_SESSION['error'] = 'Please Fill Password';
+        header('location:index.php');
         exit;
     } elseif (empty($username)) {
-        echo "<script>alert('Please Fill Username');</script>";
+        $_SESSION['error'] = 'Please Fill Username';
+        header('location:index.php');
         exit;
     }
 
-    $sql = "SELECT * FROM `tbl_user` WHERE `username`='$username' AND `password`='$password'";
-    $result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM tbl_user WHERE username = :username AND password = :password";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['username' => $username, 'password' => $password]);
+    $row = $stmt->fetch();
 
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_array($result);
+    if ($row) {
         $_SESSION['name'] = $row['name'];
         $_SESSION['username'] = $row['username'];
         $_SESSION['password'] = $row['password'];
-        header('Location: index.html');
+        header('location:index.html');
+        exit;
     } else {
-        echo "<script>alert('Invalid Username or Password');</script>";
+        $_SESSION['error'] = 'Invalid Username or Password';
+        header('location:index.php');
+        exit;
     }
 }
 ?>

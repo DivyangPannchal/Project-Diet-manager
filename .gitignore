@@ -1,0 +1,13 @@
+# XAMPP / PHP legacy files
+php_errors.log
+setup_db_error.log
+*.sql
+!init.sql
+
+# Backup files
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db

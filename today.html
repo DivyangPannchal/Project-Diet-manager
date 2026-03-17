@@ -3,116 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TMD</title>
-        <!-- font awesome cdn -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <!-- normalize css -->
-        <link rel = "stylesheet" href = "normalize.css">
-        <!-- custom css -->
-        <link rel = "stylesheet" href = "utility.css">
-        <link rel = "stylesheet" href = "today.css">
-        <link rel = "stylesheet" href = "responsive.css">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>TDM — Today's Briefing</title>
+  <link rel="stylesheet" href="scifi.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .today-page { padding: 5rem 2rem 3rem; }
+    .today-inner { max-width: 1100px; margin: 0 auto; }
+
+    .today-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 750px) { .today-grid { grid-template-columns: 1fr; } }
+
+    .today-panel { padding: 2rem; }
+    .panel-head {
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      color: var(--cyan);
+      margin-bottom: 1.5rem;
+    }
+
+    .days-table { width: 100%; border-collapse: collapse; }
+    .days-table tr { border-bottom: 1px solid rgba(0,245,255,0.08); }
+    .days-table td { padding: 0.5rem 0.3rem; }
+    .days-table td:first-child {
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      width: 110px;
+    }
+    .days-table input {
+      width: 100%;
+      background: rgba(0,20,50,0.5);
+      border: 1px solid rgba(0,245,255,0.2);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 0.35rem 0.6rem;
+      outline: none;
+      transition: var(--trans);
+    }
+    .days-table input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px rgba(0,245,255,0.3);
+    }
+
+    #caloriesChart { max-height: 300px; }
+
+    .food-search-wrap { margin-top: 2rem; }
+    .search-row { display: flex; gap: 0.8rem; }
+    .search-row input { flex: 1; }
+    #result { margin-top: 1.2rem; }
+    .food-card {
+      background: rgba(0,245,255,0.06);
+      border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 0.7rem;
+      font-size: 0.92rem;
+    }
+    .food-card strong { color: var(--cyan); font-family: var(--font-head); font-size: 0.85rem; letter-spacing: 1px; }
+  </style>
 </head>
 <body>
 
-  <nav class = "navbar">
-    <div class = "container flex">
-      <a href = "index.html" class = "site-brand">
-        <span>TDM</span>
-    </a>
-        <button type = "button" id = "navbar-show-btn" class = "flex">
-            <i class = "fas fa-bars"></i>
-        </button>
-        <div id = "navbar-collapse">
-            <button type = "button" id = "navbar-close-btn" class = "flex">
-                <i class = "fas fa-times"></i>
-            </button>
-            <ul class = "navbar-nav">
-                <li class = "nav-item">
-                    <a href = "index.html" class = "nav-link">Home</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "bmi.html" class = "nav-link">BMI calculator</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "deittipshtml.html" class = "nav-link">Diet Tips</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "try.php" class = "nav-link">ToDo</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "today.html" class = "nav-link">Today</a>
-                </li>
-                <li class = "nav-item">
-                    <a href = "aibot.html" class = "nav-link">Chatbot</a>
-                </li>
-                <li class = "nav-item">
-                  <a href = "index.php" class = "nav-link">Logout</a>
-              </li>
-            </ul>
-        </div>
-    </div>
+<!-- NAVBAR -->
+<nav class="sf-nav" id="sfNav">
+  <a href="index.html" class="sf-logo">TDM</a>
+  <ul class="sf-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bmi.html">BMI Calc</a></li>
+    <li><a href="deittipshtml.html">Diet Tips</a></li>
+    <li><a href="try.php">To-Do</a></li>
+    <li><a href="today.html" class="active">Today</a></li>
+    <li><a href="aibot.html">NutriBot</a></li>
+    <li><a href="index.php" class="logout-link">Logout</a></li>
+  </ul>
+  <button class="sf-hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
+<div class="sf-mobile-menu" id="mobileMenu">
+  <button class="sf-mobile-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="bmi.html">BMI Calculator</a>
+  <a href="deittipshtml.html">Diet Tips</a>
+  <a href="try.php">To-Do List</a>
+  <a href="today.html">Today</a>
+  <a href="aibot.html">NutriBot AI</a>
+  <a href="index.php" style="color:var(--red-neon)">Logout</a>
+</div>
 
-<!-- header -->
-<header class = "flex">
-    <div class = "container">
-        <div class = "header-title">
-            <h1>Calories Intake Chart</h1>
-        </div>
+<div class="page-content today-page">
+  <div class="today-inner">
+    <h2 class="sf-section-title animate-float">TODAY'S BRIEFING</h2>
+    <div class="sf-divider"></div>
+    <p class="sf-section-subtitle">Track your weekly calorie intake and search nutritional data</p>
+
+    <div class="today-grid">
+      <!-- Calorie input -->
+      <div class="scifi-panel corner-decor today-panel animate-float">
+        <div class="panel-head">▸ WEEKLY CALORIE LOG</div>
+        <table class="days-table">
+          <tr><td>Monday</td><td><input type="number" id="monday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Tuesday</td><td><input type="number" id="tuesday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Wednesday</td><td><input type="number" id="wednesday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Thursday</td><td><input type="number" id="thursday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Friday</td><td><input type="number" id="friday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Saturday</td><td><input type="number" id="saturday" min="0" placeholder="kcal"></td></tr>
+          <tr><td>Sunday</td><td><input type="number" id="sunday" min="0" placeholder="kcal"></td></tr>
+        </table>
+        <button class="sf-btn" style="margin-top:1.2rem;width:100%" onclick="updateChart()">UPDATE CHART</button>
+      </div>
+
+      <!-- Chart -->
+      <div class="scifi-panel corner-decor today-panel animate-float">
+        <div class="panel-head">▸ CALORIE INTAKE VISUALIZATION</div>
+        <canvas id="caloriesChart"></canvas>
+      </div>
     </div>
-  </header>
-  <!-- header -->
 
-  <div class="graph-container">
-    <canvas id="caloriesChart"></canvas>
-    <div id="caloriesForm">
-      <table style="margin: 60px;">
-        <tr>
-          <td><label for="monday" style="color: black;font-size: larger;font-weight: bold;">Monday:</label></td>
-          <td><input type="number" id="monday" min="0"></td>
-        </tr>
-        <tr>
-          <td><label for="tuesday" style="color: black;font-size: larger;font-weight: bold;">Tuesday:</label></td>
-          <td><input type="number" id="tuesday" min="0"></td>
-        </tr>
-          <tr>
-            <td><label for="wednesday" style="color:black;font-size: larger;font-weight: bold;">Wednesday:</label></td>
-           <td><input type="number" id="wednesday" min="0"></td>
-        </tr>
-        <tr>
-          <td><label for="thursday" style="color:black;font-size: larger;font-weight: bold;">Thursday:</label></td>
-          <td><input type="number" id="thursday" min="0"></td>
-
-        </tr>
-        <tr>
-          <td><label for="friday" style="color: black;font-size: larger;font-weight: bold;">Friday:</label></td>
-          <td><input type="number" id="friday" min="0"></td>
-        </tr>
-        <tr>
-          <td> <label for="saturday" style="color:black;font-size: larger;font-weight: bold;">Saturday:</label></td>
-          <td><input type="number" id="saturday" min="0"></td>
-
-        </tr>
-        <tr>
-          <td><label for="sunday" style="color: black;font-size: larger;font-weight: bold;">Sunday:</label></td>
-           <td><input type="number" id="sunday" min="0"></td>
-        </tr>
-      </table>
+    <!-- Food search -->
+    <div class="scifi-panel corner-decor today-panel food-search-wrap animate-float" style="margin-top:2rem">
+      <div class="panel-head">▸ FOOD NUTRIENT SCANNER</div>
+      <div class="search-row">
+        <input type="text" id="searchInput" class="sf-input" placeholder="Enter food name (e.g. apple, rice, chicken)">
+        <button class="sf-btn" onclick="searchFood()">SCAN</button>
+      </div>
+      <div id="result"></div>
     </div>
+
   </div>
-
-  <div id="search-container">
-    <h1>Food Search</h1>
-    <label for="searchInput">Search for food:</label>
-    <input type="text" id="searchInput" placeholder="Enter food name">
-    <button onclick="searchFood()">Search</button>
 </div>
 
-<div id="result-container">
-    <div id="result"></div>
-</div>
-  <script src="today.js"></script>
+<script>
+  const nav = document.getElementById('sfNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+  document.getElementById('menuClose').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+
+  // Build chart
+  const ctx = document.getElementById('caloriesChart').getContext('2d');
+  const chartData = { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], values: [0,0,0,0,0,0,0] };
+  const cal = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: chartData.labels,
+      datasets: [{
+        label: 'Calories (kcal)',
+        data: chartData.values,
+        backgroundColor: 'rgba(0,245,255,0.3)',
+        borderColor: '#00f5ff',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#6aadcc', font: { family: 'Rajdhani' } } } },
+      scales: {
+        x: { ticks: { color: '#6aadcc' }, grid: { color: 'rgba(0,245,255,0.05)' } },
+        y: { ticks: { color: '#6aadcc' }, grid: { color: 'rgba(0,245,255,0.05)' } }
+      }
+    }
+  });
+
+  function updateChart() {
+    const days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+    cal.data.datasets[0].data = days.map(d => parseFloat(document.getElementById(d).value) || 0);
+    cal.update();
+  }
+</script>
+<script src="today.js"></script>
 </body>
 </html>
