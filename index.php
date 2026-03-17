@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -105,7 +106,6 @@
     <div class="auth-title">SYSTEM ACCESS</div>
 
     <?php
-      session_start();
       if (isset($_SESSION['error'])) {
         echo '<div class="error-msg">⚠ ' . htmlspecialchars($_SESSION['error']) . '</div>';
         unset($_SESSION['error']);
