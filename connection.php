@@ -11,11 +11,11 @@ $password = getenv('DB_PASS') ?: 'root';
 $dbUrl = getenv('DATABASE_URL');
 if ($dbUrl) {
     $dbopts = parse_url($dbUrl);
-    $host = $dbopts["host"];
-    $port = $dbopts["port"];
-    $user = $dbopts["user"];
-    $password = $dbopts["pass"];
-    $dbname = ltrim($dbopts["path"], '/');
+    $host = $dbopts["host"] ?? $host;
+    $port = $dbopts["port"] ?? $port;
+    $user = $dbopts["user"] ?? $user;
+    $password = $dbopts["pass"] ?? $password;
+    $dbname = isset($dbopts["path"]) ? ltrim($dbopts["path"], '/') : $dbname;
 }
 
 try {
